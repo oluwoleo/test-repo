@@ -1,0 +1,42 @@
+ave your workbook. If this code doesn't do what you want, the only way to go back is to close without saving and reopen.
+
+Select the data you want to list in one column. Must be contiguous columns. May contain blank cells.
+
+Press Alt+F11 to open the VBE
+
+Press Control+R to view the Project Explorer
+
+Navigate to the project for your workbook and choose Insert - Module
+
+Paste this code in the code pane
+
+Sub MakeOneColumn()
+
+    Dim vaCells As Variant
+    Dim vOutput() As Variant
+    Dim i As Long, j As Long
+    Dim lRow As Long
+
+    If TypeName(Selection) = "Range" Then
+        If Selection.Count > 1 Then
+            If Selection.Count <= Selection.Parent.Rows.Count Then
+                vaCells = Selection.Value
+
+                ReDim vOutput(1 To UBound(vaCells, 1) * UBound(vaCells, 2), 1 To 1)
+
+                For j = LBound(vaCells, 2) To UBound(vaCells, 2)
+                    For i = LBound(vaCells, 1) To UBound(vaCells, 1)
+                        If Len(vaCells(i, j)) > 0 Then
+                            lRow = lRow + 1
+                            vOutput(lRow, 1) = vaCells(i, j)
+                        End If
+                    Next i
+                Next j
+
+                Selection.ClearContents
+                Selection.Cells(1).Resize(lRow).Value = vOutput
+            End If
+        End If
+    End If
+
+End Sub
